@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Night Shift Hub — Full Dashboard",
+  "short_name": "Night Shift Hub",
+  "version": "1.0.0",
+  "description": "Night Shift Hub full-size dashboard for Chrome and Edge, based on the existing website.",
+  "action": {
+    "default_title": "Open Night Shift Hub Full Dashboard",
+    "default_icon": {
+      "128": "icon-128.png"
+    }
+  },
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "dashboard.html",
+    "open_in_tab": true
+  },
+  "permissions": [],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
