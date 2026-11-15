@@ -23,6 +23,9 @@ assert.match(install,/Start-Process -FilePath \$chrome -ArgumentList @\(\$urls\[
 assert.match(install,/Start-Sleep -Seconds \$warmupSeconds/);
 assert.match(install,/warmup-seconds\.txt/);
 assert.match(install,/netflow-warmup\.log/);
+assert.match(install,/\$warmupSeconds=5/);
+assert.match(install,/-Value '5' -Encoding Ascii/);
+assert.doesNotMatch(install,/\$warmupSeconds=15/);
 assert.doesNotMatch(install,/Start-Process -FilePath \$chrome -ArgumentList \(@\('--new-window'\) \+ \$urls\)/);
 assert.match(app,/ทยอยโหลด NetFlow ทีละแท็บ/);
 assert.match(install,/Start-Process -FilePath \$chrome -ArgumentList/);

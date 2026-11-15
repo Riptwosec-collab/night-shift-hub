@@ -50,7 +50,7 @@ try {
     }
     if(-not $chrome){throw 'Google Chrome not found.'}
     # Foreground warmup: open URLs sequentially instead of all at once.
-    $warmupSeconds=15
+    $warmupSeconds=5
     $config=Join-Path $PSScriptRoot 'warmup-seconds.txt'
     if(Test-Path -LiteralPath $config){
         $setting=(Get-Content -LiteralPath $config -Raw).Trim()
@@ -87,7 +87,7 @@ try {
 '@
 Write-Host 'Night Shift Hub NetFlow 14 — Chrome launcher' -ForegroundColor Cyan
 Write-Host 'One click opens a Chrome window and loads all 14 NetFlow tabs sequentially.'
-Write-Host 'Default warmup: 15 seconds per tab; configure 5-60 seconds in warmup-seconds.txt.'
+Write-Host 'Default warmup: 5 seconds per tab; configure 5-60 seconds in warmup-seconds.txt.'
 Write-Warning 'Any website can request the custom URL scheme, but the installed launcher accepts only the fixed 14 URLs.'
 Write-Warning 'Chrome/Windows may ask before opening the external application. Normal VPN and login permissions apply.'
 $answer=Read-Host 'Type YES to install for this Windows account (anything else cancels)'
@@ -98,7 +98,7 @@ Set-Content -LiteralPath $launcher -Value $source -Encoding UTF8
 # Preserve a local warmup delay already customized by the user.
 $config=Join-Path $folder 'warmup-seconds.txt'
 if(-not (Test-Path -LiteralPath $config)){
-    Set-Content -LiteralPath $config -Value '15' -Encoding Ascii
+    Set-Content -LiteralPath $config -Value '5' -Encoding Ascii
 }
 
 $command='"'+$powershell+'" -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "'+$launcher+'" "%1"'

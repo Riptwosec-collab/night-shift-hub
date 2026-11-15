@@ -109,3 +109,7 @@ IMPORTANT: existing users must download install-nightshift-netflow.ps1 again, re
 For Chrome, open chrome://settings/performance and optionally add nocorion.rd.go.th to Always keep these sites active. This prevents memory discarding but does not guarantee hidden-tab graph rendering. If a chart remains loading when the tab is foreground, check SolarWinds API requests, VPN and user session.
 
 No change to Xshell, Excel PDF, passwords or other website features.
+
+### NetFlow warmup delay — 5 seconds (2026-11-16)
+
+The launcher now defaults to **5 seconds** between NetFlow tabs, retaining the exact order of all 14 nodes. An existing Windows installation reads `%LOCALAPPDATA%\NightShiftHub\NetFlowLauncher\warmup-seconds.txt`; update that file directly with `Set-Content "$env:LOCALAPPDATA\NightShiftHub\NetFlowLauncher\warmup-seconds.txt" -Value "5"` to apply immediately, without reinstalling. Fresh installs use 5 seconds by default; reinstalling preserves a valid previous custom delay. This shorter delay is best-effort and does not guarantee SolarWinds finishes rendering each chart before switching tabs.
