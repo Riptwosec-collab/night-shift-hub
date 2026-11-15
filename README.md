@@ -93,3 +93,19 @@ The launcher stores no passwords, accepts no URLs or code from the website, and 
 To uninstall, run the same installer with -Uninstall.
 
 Live Windows/Chrome end-to-end testing is still necessary; a successful request does not establish that the intranet pages loaded.
+
+### NetFlow loading repair — sequential foreground warmup
+
+The original launcher opened all 14 URLs simultaneously, leaving many SolarWinds charts in background tabs. Background-tab throttling may contribute to Loading... status but has not been confirmed as the only cause.
+
+The revised Windows launcher opens the first NetFlow URL in a new Chrome window, waits 15 seconds by default, and requests one more NetFlow URL in Chrome at each interval. Chrome normally opens a requested URL as a foreground tab in its last active window. This is an automatic best-effort workaround, not an inspection of graph/AJAX completion.
+
+Keep the new Chrome window in front while loading; switching windows can direct new tabs elsewhere or cause the tabs to become backgrounded. The 14 NetFlow URLs and browser profile are unchanged.
+
+Progress is written to %LOCALAPPDATA%/NightShiftHub/NetFlowLauncher/netflow-warmup.log. The delay can be changed from 15 to an integer 5–60 by editing %LOCALAPPDATA%/NightShiftHub/NetFlowLauncher/warmup-seconds.txt; the installer preserves existing choices.
+
+IMPORTANT: existing users must download install-nightshift-netflow.ps1 again, review and run it with PowerShell, then type YES to upgrade the installed local helper. A website refresh alone cannot change it.
+
+For Chrome, open chrome://settings/performance and optionally add nocorion.rd.go.th to Always keep these sites active. This prevents memory discarding but does not guarantee hidden-tab graph rendering. If a chart remains loading when the tab is foreground, check SolarWinds API requests, VPN and user session.
+
+No change to Xshell, Excel PDF, passwords or other website features.

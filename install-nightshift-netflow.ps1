@@ -49,7 +49,29 @@ try {
         if($cmd){$chrome=$cmd.Source}
     }
     if(-not $chrome){throw 'Google Chrome not found.'}
-    Start-Process -FilePath $chrome -ArgumentList (@('--new-window') + $urls)
+    # Foreground warmup: open URLs sequentially instead of all at once.
+    $warmupSeconds=15
+    $config=Join-Path $PSScriptRoot 'warmup-seconds.txt'
+    if(Test-Path -LiteralPath $config){
+        $setting=(Get-Content -LiteralPath $config -Raw).Trim()
+        $parsed=0
+        if([int]::TryParse($setting,[ref]$parsed) -and $parsed -ge 5 -and $parsed -le 60){
+            $warmupSeconds=$parsed
+        }
+    }
+    $progressLog=Join-Path $PSScriptRoot 'netflow-warmup.log'
+    Set-Content -LiteralPath $progressLog -Value ('Started '+(Get-Date -Format 's')+' | delay '+$warmupSeconds+'s') -Encoding UTF8
+    Start-Process -FilePath $chrome -ArgumentList @('--new-window',$urls[0])
+    Add-Content -LiteralPath $progressLog -Value ('1/14 | NN:'+$ids[0])
+    for($i=1;$i -lt $urls.Count;$i++){
+        Start-Sleep -Seconds $warmupSeconds
+        # Without --new-window, Chrome normally opens the URL as a foreground tab
+        # in the last active Chrome window. No window or profile is forcibly changed.
+        Start-Process -FilePath $chrome -ArgumentList @($urls[$i])
+        Add-Content -LiteralPath $progressLog -Value (($i+1).ToString()+'/14 | NN:'+$ids[$i])
+    }
+    Add-Content -LiteralPath $progressLog -Value ('All 14 pages requested at '+(Get-Date -Format 's'))
+
 } catch {
     $log=Join-Path $PSScriptRoot 'netflow-launcher-error.log'
     Add-Content -LiteralPath $log -Value ((Get-Date -Format 's')+' '+$_.Exception.Message)
@@ -64,7 +86,8 @@ try {
 }
 '@
 Write-Host 'Night Shift Hub NetFlow 14 — Chrome launcher' -ForegroundColor Cyan
-Write-Host 'One button will open Chrome NEW WINDOW with 14 tabs on nocorion.rd.go.th.'
+Write-Host 'One click opens a Chrome window and loads all 14 NetFlow tabs sequentially.'
+Write-Host 'Default warmup: 15 seconds per tab; configure 5-60 seconds in warmup-seconds.txt.'
 Write-Warning 'Any website can request the custom URL scheme, but the installed launcher accepts only the fixed 14 URLs.'
 Write-Warning 'Chrome/Windows may ask before opening the external application. Normal VPN and login permissions apply.'
 $answer=Read-Host 'Type YES to install for this Windows account (anything else cancels)'
@@ -72,6 +95,12 @@ if($answer -cne 'YES'){Write-Host 'Cancelled. No changes made.';return}
 Check-Handler
 New-Item -ItemType Directory -Path $folder -Force | Out-Null
 Set-Content -LiteralPath $launcher -Value $source -Encoding UTF8
+# Preserve a local warmup delay already customized by the user.
+$config=Join-Path $folder 'warmup-seconds.txt'
+if(-not (Test-Path -LiteralPath $config)){
+    Set-Content -LiteralPath $config -Value '15' -Encoding Ascii
+}
+
 $command='"'+$powershell+'" -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "'+$launcher+'" "%1"'
 New-Item -Path $key -Force | Out-Null
 Set-Item -LiteralPath $key -Value 'URL:Night Shift Hub NetFlow Launcher'
