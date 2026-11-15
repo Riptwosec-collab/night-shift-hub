@@ -10,12 +10,17 @@
     const style = document.createElement('style');
     style.id = 'nightshift-excel-pdf-styles';
     style.textContent = [
-      '#nightshift-excel-pdf{grid-column:1/-1;min-height:auto}',
-      '.nsh-pdf-body{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:14px}',
-      '.nsh-pdf-details{min-width:210px;flex:1 1 300px}',
+      '#nightshift-excel-pdf{grid-column:auto;min-width:0;min-height:198px}',
+      '#nightshift-excel-pdf .section-heading{align-items:flex-start;gap:8px}',
+      '#nightshift-excel-pdf .heading-left{min-width:0;flex:1 1 auto}',
+      '#nightshift-excel-pdf .heading-left>div{min-width:0}',
+      '#nightshift-excel-pdf h2{font-size:12px;line-height:1.45;overflow-wrap:anywhere}',
+      '#nightshift-excel-pdf .chip{flex:0 0 auto}',
+      '.nsh-pdf-body{display:flex;flex-direction:column;align-items:flex-start;gap:9px;padding:11px 12px}',
+      '.nsh-pdf-details{min-width:0;width:100%}',
       '.nsh-pdf-steps{margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;list-style:none}',
       '.nsh-pdf-steps li{border:1px solid #155a7c;border-radius:5px;padding:5px 8px;background:#031421;color:#a6d7e8;font-size:10px}',
-      '.nsh-pdf-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}',
+      '.nsh-pdf-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;width:100%}',
       '.nsh-pdf-start{display:inline-flex;justify-content:center;align-items:center;min-height:39px;padding:9px 15px;border:1px solid #48dbff;border-radius:7px;background:linear-gradient(180deg,#0abff0,#077cbb);color:#fff;font-weight:800;text-decoration:none;box-shadow:0 0 15px rgba(9,188,255,.12)}',
       '.nsh-pdf-start:hover,.nsh-pdf-start:focus-visible{border-color:#a0f1ff;background:#168cc1}',
       '.nsh-pdf-setup{color:#88d9f4;font-size:10px;text-decoration:underline;text-underline-offset:3px}',
@@ -37,9 +42,9 @@
     number.textContent = 'PDF';
     const titleWrap = document.createElement('div');
     const title = document.createElement('h2');
-    title.textContent = 'Excel → PDF Auto';
+    title.textContent = 'รายงานเหตุการณ์การเฝ้าระวังเว็บไซต์กรมสรรพากร Excel → PDF Auto';
     const subtitle = document.createElement('p');
-    subtitle.textContent = 'จัดหน้ารายงาน A4 แนวนอนและแปลง PDF ผ่าน Excel บน Windows';
+    subtitle.textContent = 'จัดหน้ารายงาน A4 แนวนอนและส่งออก PDF อัตโนมัติ';
     titleWrap.append(title, subtitle);
     headingLeft.append(number, titleWrap);
     const chip = document.createElement('span');
@@ -80,7 +85,13 @@
     actions.append(start);
     body.append(details, actions);
     article.append(heading, body);
-    grid.appendChild(article);
+    const builderCard = document.getElementById('nocBuilderCard');
+    if (builderCard?.parentElement === grid) {
+      builderCard.insertAdjacentElement('afterend', article);
+    } else {
+      // Fallback only if the Table Builder module is unavailable.
+      grid.appendChild(article);
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true});
   else mount();

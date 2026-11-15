@@ -113,3 +113,7 @@ No change to Xshell, Excel PDF, passwords or other website features.
 ### NetFlow warmup delay — 5 seconds (2026-11-16)
 
 The launcher now defaults to **5 seconds** between NetFlow tabs, retaining the exact order of all 14 nodes. An existing Windows installation reads `%LOCALAPPDATA%\NightShiftHub\NetFlowLauncher\warmup-seconds.txt`; update that file directly with `Set-Content "$env:LOCALAPPDATA\NightShiftHub\NetFlowLauncher\warmup-seconds.txt" -Value "5"` to apply immediately, without reinstalling. Fresh installs use 5 seconds by default; reinstalling preserves a valid previous custom delay. This shorter delay is best-effort and does not guarantee SolarWinds finishes rendering each chart before switching tabs.
+
+### Excel → PDF card placement — 2026-11-16
+
+The PDF converter is displayed in the **right-hand column directly beside NOC@RD Table Builder** on desktop by inserting its card immediately after `#nocBuilderCard` and using the site's existing two-column grid. It stacks beneath Table Builder on screens 680px or narrower. The card heading is **รายงานเหตุการณ์การเฝ้าระวังเว็บไซต์กรมสรรพากร Excel → PDF Auto**. The one-click Windows conversion workflow and its `nightshifthub-excelpdf://run` URL remain unchanged, and no installer button was reintroduced.
