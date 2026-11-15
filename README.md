@@ -117,3 +117,24 @@ The launcher now defaults to **5 seconds** between NetFlow tabs, retaining the e
 ### Excel → PDF card placement — 2026-11-16
 
 The PDF converter is displayed in the **right-hand column directly beside NOC@RD Table Builder** on desktop by inserting its card immediately after `#nocBuilderCard` and using the site's existing two-column grid. It stacks beneath Table Builder on screens 680px or narrower. The card heading is **รายงานเหตุการณ์การเฝ้าระวังเว็บไซต์กรมสรรพากร Excel → PDF Auto**. The one-click Windows conversion workflow and its `nightshifthub-excelpdf://run` URL remain unchanged, and no installer button was reintroduced.
+
+## NOC External AutoFill V3.9 — launch the user's local CMD
+
+The **NOC@RD Table Builder** card has two buttons: **เปิด Table Builder** (original website table) and **เปิด NOC External Form** (launches the user's Windows OPEN_NOC_FORM.cmd). The existing table builder, Excel/PDF and other modules are unchanged.
+
+### First-time Windows setup (per Windows account)
+
+1. Keep your OWN `OPEN_NOC_FORM.cmd` and `NOC_External_Form.ps1` together in the same folder. These two files are not hosted on the public GitHub repository.
+2. Download and review [`install-nightshift-nocform.ps1`](./install-nightshift-nocform.ps1) from this repository.
+3. Open PowerShell and run `powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File "<full path to install-nightshift-nocform.ps1>"`.
+4. The installer displays a file picker for `OPEN_NOC_FORM.cmd`, verifies that `NOC_External_Form.ps1` is beside it, and shows the SHA256 hashes.
+5. Type `YES` after reviewing the warnings. The installer copies those two files into `%LOCALAPPDATA%\NightShiftHub\NOCExternalForm` and registers a fixed per-user Windows custom protocol `nightshifthub-nocform://`.
+6. Open the NOC report in Microsoft Excel Desktop with editing enabled, click **เปิด NOC External Form** on Night Shift Hub and approve Chrome's external-application prompt if shown.
+
+Browser security: a website cannot execute a CMD/PowerShell program directly. The installed URL handler accepts no arguments or commands from the web; it can only start the user's fixed local form. Any website can request the registered protocol, so approve external-app prompts only from trusted sites.
+
+Original uploaded `OPEN_NOC_FORM.cmd` starts the WinForms PowerShell 5.1 program with `-STA`. The uploaded README describes adding/updating individual or multiple Tickets in the Excel workbook that is already open, **without automatically saving**. Disable Excel AutoSave if necessary, review changes, and save manually with Ctrl+S.
+
+**Privacy:** user-supplied NOC CMD/PS1 files and workbook contents are not uploaded to GitHub or transmitted by this website. They remain stored only on the Windows PC where they are installed. The installer is published; the two operational scripts are not.
+
+**Uninstall:** run the same Windows installer with `-Uninstall` to remove the protocol registration and the installed copies (not your original files). The effect of opening the program and writing data through Excel COM must be tested on Windows; static tests only check that the button and installer are wired correctly.

@@ -113,6 +113,7 @@
       </div>
       <div class="action-row">
         <button class="btn btn-primary" id="openNocBuilder" type="button">เปิด Table Builder</button>
+        <a class="btn btn-ghost" id="openNocExternalForm" href="nightshifthub-nocform://open" title="เปิด OPEN_NOC_FORM.cmd ที่ติดตั้งไว้บน Windows (NOC External AutoFill V3.9)">เปิด NOC External Form</a>
       </div>`;
     grid.appendChild(card);
   }
