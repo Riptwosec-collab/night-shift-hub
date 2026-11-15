@@ -41,3 +41,22 @@ node tests/night-shift-extension.contract.cjs
 Then reload the unpacked extension on `chrome://extensions` / `edge://extensions`.
 
 **Validation note:** Static source/manifest parity checks are included. Live end-to-end browser verification of every action is a separate step, and no Chrome Web Store release is claimed.
+
+## เปิด 3 Xshell Sessions จากการ์ดอุณหภูมิ
+
+Version 1.1 adds **เปิด Xshell** and **คัดลอก SSH** under each of the original three device cards, in this exact order:
+
+| Host | SSH URL |
+|---|---|
+| IT05-C3750X-Intra-Inter | `ssh://10.1.100.3` |
+| IT06-C9500-CSW1-A01 | `ssh://10.1.100.1` |
+| IT06-C9500-CSW2-A02 | `ssh://10.1.100.2` |
+
+- Each click is **individual**. One click launches only one selected SSH target (Windows external-link prompt may appear), not all three automatically.
+- To open Xshell directly from Chrome/Edge, **Windows must be configured to handle `ssh://` URLs using Xshell.exe**. The browser extension cannot run a local Windows program directly. The app does not contain any authentication credentials.
+- **Optional** first-time setup: run the included `extension/register-xshell-ssh.ps1` from PowerShell on the **user's own Windows machine** after reviewing it. It searches for Xshell 8, shows any existing `ssh://` handler, then asks you to explicitly type `YES` before changing the HKCU association. This changes how **all** `ssh://` links work for your Windows account. You do not need administrator rights for HKCU.
+- If you don't want to change Windows settings, click **คัดลอก SSH** and paste the copied URL directly into Xshell 8's address bar, or start Xshell manually: `Xshell -url ssh://10.1.100.3`, `Xshell -url ssh://10.1.100.1`, `Xshell -url ssh://10.1.100.2`.
+- With Xshell configured to open multiple sessions in one window, they appear as separate tabs; otherwise windows/tabs follow the Xshell application preference.
+- No change to the main Night Shift Hub website, source task logic, temperature values, or Chrome extension permissions.
+
+**Important:** The URL buttons request a Windows protocol handoff; they do not confirm that a connection was established or that a device is online. Real Chrome/Edge + Windows/Xshell end-to-end testing remains necessary.

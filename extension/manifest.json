@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Night Shift Hub — Full Dashboard",
   "short_name": "Night Shift Hub",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Night Shift Hub full-size dashboard for Chrome and Edge, based on the existing website.",
   "action": {
     "default_title": "Open Night Shift Hub Full Dashboard",

@@ -10,4 +10,10 @@ const mapping=[['index.html','dashboard.html'],['styles.css','styles.css'],
  ['custom-links.js','custom-links.js'],['noc-table.js','noc-table.js']];
 fs.mkdirSync(target,{recursive:true});
 for(const [from,to] of mapping)fs.copyFileSync(path.join(root,from),path.join(target,to));
+// Extension-only SSH launch controls are deliberately NOT added to the hosted website.
+const htmlPath=path.join(target,'dashboard.html');
+let html=fs.readFileSync(htmlPath,'utf8');
+html=html.replace('</body>', '  <script src="./xshell-quick-launch.js"></script>\n</body>');
+fs.writeFileSync(htmlPath,html);
+
 console.log('Night Shift Hub Full Dashboard refreshed from original sources ('+mapping.length+' files).');
