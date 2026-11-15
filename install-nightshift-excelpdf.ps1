@@ -27,6 +27,7 @@ if (-not (Test-Path -LiteralPath $powershell -PathType Leaf)) {
 }
 $convertSource = @'
 # Fixed-action helper: Windows shows file picker, then Microsoft Excel exports PDFs.
+# Worker version: 1.2.0 - Unicode-safe Excel filename -> PDF filename
 # Browser supplies no filenames or shell commands; only the fixed protocol request.
 param([Parameter(Position=0)][string]$Uri='')
 Set-StrictMode -Version Latest
@@ -45,18 +46,31 @@ function ReleaseCom([object]$obj) {
     }
 }
 function UniquePdf([string]$source) {
-    $folder=[IO.Path]::GetDirectoryName($source)
-    $name=[IO.Path]::GetFileNameWithoutExtension($source)
+    # Keep the ORIGINAL Unicode filename from the selected Excel workbook.
+    # .NET Path combines Unicode strings; only the ASCII extension is appended.
+    $fullSource=[IO.Path]::GetFullPath($source)
+    $folder=[IO.Path]::GetDirectoryName($fullSource)
+    $name=[IO.Path]::GetFileNameWithoutExtension($fullSource)
+    if([string]::IsNullOrWhiteSpace($name)){throw 'Excel source file has no basename.'}
     for($i=1;$i -le 999;$i++){
-        $suffix=if($i -eq 1){'.pdf'}else{'_'+$i+'.pdf'}
-        $result=Join-Path $folder ($name+$suffix)
+        $outName=if($i -eq 1){$name+'.pdf'}else{$name+'_'+$i+'.pdf'}
+        $result=[IO.Path]::Combine($folder,$outName)
         if (-not [IO.File]::Exists($result)) { return $result }
     }
     throw ('Too many existing PDF exports for '+$name)
 }
+function Write-Trace([string]$entry) {
+    # UTF-16 LE log reliably preserves Thai filenames in Windows PowerShell 5.1.
+    $trace=Join-Path $env:LOCALAPPDATA 'NightShiftHub\ExcelPDF\conversion-trace.txt'
+    $line=(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')+' | '+$entry+[Environment]::NewLine
+    try { [IO.File]::AppendAllText($trace,$line,[Text.Encoding]::Unicode) } catch {}
+}
 function ConvertOne([object]$app,[string]$source) {
     $book=$null; $sheet=$null; $used=$null; $range=$null; $br=$null
     try {
+        $source=[IO.Path]::GetFullPath($source)
+        $sourceBase=[IO.Path]::GetFileNameWithoutExtension($source)
+        Write-Trace ('SELECTED_EXCEL | '+$source)
         $book=$app.Workbooks.Open($source,0,$true) # no external link update, read-only
         $sheet=$book.Worksheets.Item(1)
         $used=$sheet.UsedRange
@@ -107,8 +121,20 @@ function ConvertOne([object]$app,[string]$source) {
             [void]$sheet.HPageBreaks.Add($br)
         }
         $output=UniquePdf $source
+        $outName=[IO.Path]::GetFileNameWithoutExtension($output)
+        $expected=$sourceBase
+        # Only a numeric suffix is allowed when the original PDF name already exists.
+        $valid=($outName -ceq $expected)
+        if(-not $valid -and $outName.StartsWith(($expected+'_'),[StringComparison]::Ordinal)){
+            $tail=$outName.Substring($expected.Length+1)
+            $numeric=0
+            $valid=([int]::TryParse($tail,[ref]$numeric) -and $numeric -ge 2)
+        }
+        if(-not $valid){ throw 'Output filename does not match the selected Excel filename.' }
+        Write-Trace ('PDF_TARGET | '+$output)
         $sheet.ExportAsFixedFormat(0,$output,0,$true,$false)
         if(-not [IO.File]::Exists($output)){ throw 'Excel did not create the PDF.' }
+        Write-Trace ('PDF_EXPORTED | '+$output)
         return $output
     } finally {
         if($null -ne $book){try{$book.Close($false)}catch{}}
@@ -144,7 +170,10 @@ try {
             }
             $pdf=ConvertOne $app $file
             $done.Add($pdf)
-        }catch{$failed.Add(([IO.Path]::GetFileName($file)+': '+$_.Exception.Message))}
+        }catch{
+            Write-Trace ('FAILED | '+$file+' | '+$_.Exception.Message)
+            $failed.Add(([IO.Path]::GetFileName($file)+': '+$_.Exception.Message))
+        }
     }
 } catch {
     $failed.Add(('Cannot start Microsoft Excel: '+$_.Exception.Message))
@@ -181,6 +210,12 @@ $answer=Read-Host 'Type YES to install (anything else cancels)'
 if($answer -cne 'YES'){Write-Host 'Cancelled; nothing changed.';return}
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 Set-Content -LiteralPath $launcher -Value $convertSource -Encoding UTF8
+# Ensure Windows actually received the updated helper before continuing.
+$installedText=[IO.File]::ReadAllText($launcher,[Text.Encoding]::UTF8)
+if(-not $installedText.Contains('Worker version: 1.2.0') -or
+   -not $installedText.Contains('PDF_TARGET')){
+    throw 'Installed Excel PDF helper verification failed.'
+}
 $command='"'+$powershell+'" -NoProfile -STA -WindowStyle Hidden -ExecutionPolicy Bypass -File "'+$launcher+'" "%1"'
 New-Item -Path $key -Force | Out-Null
 Set-Item -LiteralPath $key -Value 'URL:Night Shift Hub Excel PDF Converter'
@@ -188,6 +223,6 @@ New-ItemProperty -LiteralPath $key -Name 'URL Protocol' -Value '' -PropertyType 
 $commandKey=Join-Path $key 'shell\open\command'
 New-Item -Path $commandKey -Force | Out-Null
 Set-Item -LiteralPath $commandKey -Value $command
-Write-Host 'Installation completed.' -ForegroundColor Green
+Write-Host 'Installation completed. Excel PDF worker version 1.2.0 verified.' -ForegroundColor Green
 Write-Host 'Open Night Shift Hub and click Excel to PDF Auto.'
 Write-Host 'To uninstall, re-run this script with -Uninstall.'

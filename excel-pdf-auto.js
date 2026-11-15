@@ -65,7 +65,7 @@
     });
     const note = document.createElement('p');
     note.className = 'nsh-pdf-note';
-    note.textContent = 'กดครั้งเดียว → Windows เปิดตัวเลือกไฟล์ → แปลงอัตโนมัติจนจบ ไม่แก้ไข Excel ต้นฉบับ';
+    note.textContent = 'เลือก Excel → สร้าง PDF ชื่อเดียวกับไฟล์ต้นฉบับ (เปลี่ยนแค่นามสกุล) ไม่แก้ไข Excel';
     details.append(steps, note);
 
     const actions = document.createElement('div');

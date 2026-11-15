@@ -39,7 +39,16 @@ assert.doesNotMatch(js,/ติดตั้ง \/ อัปเดตตัวแ�
 assert.doesNotMatch(js,/nsh-pdf-setup|setup\.href|actions\.append\(start, setup\)/);
 assert.doesNotMatch(html,/custom-links-panel|custom-links\.js/);
 assert.match(js,/actions\.append\(start\);/);
-assert.match(ps,/\$suffix=if\(\$i -eq 1\)\{'\.pdf'\}else\{'_'+\$i\+'\.pdf'\}/);
+assert.match(ps,/\$outName=if\(\$i -eq 1\)\{\$name\+'\.pdf'\}else\{\$name\+'_'+\$i\+'\.pdf'\}/);
+assert.match(ps,/Worker version: 1\.2\.0/);
+assert.match(ps,/SELECTED_EXCEL/);
+assert.match(ps,/PDF_TARGET/);
+assert.match(ps,/PDF_EXPORTED/);
+assert.match(ps,/Write-Trace/);
+assert.match(ps,/\[IO\.Path\]::GetFileNameWithoutExtension\(\$fullSource\)/);
+assert.match(ps,/\[IO\.Path\]::Combine\(\$folder,\$outName\)/);
+assert.match(ps,/\$sheet\.ExportAsFixedFormat\(0,\$output/);
+assert.match(ui,/PDF ชื่อเดียวกับไฟล์ต้นฉบับ/);
 assert.doesNotMatch(ps,/_จัดหน้า_A4|_A4\.pdf/);
 assert.ok(ps.charCodeAt(0) === 0xFEFF,'UTF-8 BOM required for Windows PowerShell 5.1');
 assert.match(js,/รายงานเหตุการณ์การเฝ้าระวังเว็บไซต์กรมสรรพากร Excel → PDF Auto/);

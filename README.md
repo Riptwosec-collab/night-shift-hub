@@ -166,3 +166,11 @@ To rename a previously created PDF that still contains the bad _A4 suffix, rerun
     powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File "<full path to repair-nightshift-excelpdf.ps1>" -RenameExisting
 
 Only user-selected PDFs are examined. The program previews proposed changes, requires typing RENAME, and skips name collisions. Review each proposed rename, because an intentionally named _A4 file could also match the pattern. The repair script is UTF-8 BOM-encoded for Windows PowerShell 5.1.
+
+### Unicode-safe Excel -> PDF filename pipeline v1.2.0
+
+The source filename is now captured straight from the Windows Excel OpenFileDialog and normalized using .NET `Path.GetFullPath` / `Path.GetFileNameWithoutExtension` without modifying its Unicode characters. The target PDF filename is computed **before** calling Excel's `ExportAsFixedFormat` and is the identical source basename + `.pdf`, or `_2.pdf` only on an existing-name collision. Both paths are written to the local UTF-16 log at `%LOCALAPPDATA%\NightShiftHub\ExcelPDF\conversion-trace.txt` with events `SELECTED_EXCEL`, `PDF_TARGET`, `PDF_EXPORTED`, or `FAILED`. Nothing is uploaded.
+
+**Local Windows upgrade required:** downloading/re-running the latest `install-nightshift-excelpdf.ps1` and confirming `YES` replaces the old installed worker. The installer verifies the installed `Worker version: 1.2.0` marker. Refreshing the website alone does not replace scripts on Windows. The prior separate post-export rename tool is not part of normal conversion; the proper fix occurs before Excel exports the PDF.
+
+Inspect `conversion-trace.txt` to compare original Excel path and PDF target. If the selected Excel filename is already garbled, the helper deliberately preserves it and does not guess a new name. The exported PDF filename is based on exactly what the Windows file picker returned. Windows Excel COM end-to-end behavior still requires testing on the user machine.
