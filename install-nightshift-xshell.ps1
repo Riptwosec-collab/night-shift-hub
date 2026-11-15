@@ -92,10 +92,9 @@ try {
     }
     Write-Host 'Requested 3 Xshell sessions in the specified order.'
     Write-Host 'For 3 tabs in one window: Xshell > Tools > Options > Advanced > Open multiple sessions in a single Xshell window.'
-    Start-Sleep -Seconds 3
 } catch {
-    Write-Host ('Xshell launch error: ' + $_.Exception.Message) -ForegroundColor Red
-    Read-Host 'Press Enter to close this PowerShell window'
+    $logPath = Join-Path $PSScriptRoot 'launcher-error.log'
+    Add-Content -LiteralPath $logPath -Value ((Get-Date -Format 's') + ' ' + $_.Exception.Message)
     exit 1
 }
 '@
@@ -121,7 +120,7 @@ New-Item -ItemType Directory -Path $folder -Force | Out-Null
 Set-Content -LiteralPath $launchScriptPath -Value $launchScript -Encoding UTF8
 Set-Content -LiteralPath $pathConfig -Value $XshellPath -Encoding UTF8
 
-$commandString = '"' + $powershell + '" -NoProfile -ExecutionPolicy Bypass -File "' + $launchScriptPath + '" "%1"'
+$commandString = '"' + $powershell + '" -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $launchScriptPath + '" "%1"'
 New-Item -Path $registryKey -Force | Out-Null
 Set-Item -LiteralPath $registryKey -Value 'URL:Night Shift Hub Xshell Launcher'
 New-ItemProperty -LiteralPath $registryKey -Name 'URL Protocol' -Value '' -PropertyType String -Force | Out-Null

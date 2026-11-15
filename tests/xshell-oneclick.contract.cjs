@@ -12,19 +12,18 @@ assert.deepEqual(
  ['app.js','section-toggle.js','temperature-auto.js','secret-link.js','custom-links.js','noc-table.js','xshell-quick-launch.js']
 );
 assert.match(script, /nightshifthub-xshell:\/\/open-all/);
-assert.match(script, /ติดตั้งตัวเปิด \(ครั้งแรก\)/);
 assert.match(script, /เปิด Xshell ทั้ง 3/);
-assert.match(script, /install-nightshift-xshell\.ps1/);
-assert.match(script, /\.device-grid/);
-assert.match(script, /\.device-card\[data-device/);
+assert.match(script, /nsh-xshell-all-toolbar/);
+assert.doesNotMatch(script, /ติดตั้งตัวเปิด|คัดลอก SSH|nsh-xshell-row|nsh-xshell-install|ssh:\/\//);
+assert.doesNotMatch(script, /eval\s*\(|new\s+Function\s*\(/);
+assert.doesNotMatch(script, /chrome\.scripting|child_process|ActiveXObject/);
 for (const ip of ['10.1.100.3','10.1.100.1','10.1.100.2']) {
  assert.ok(script.includes(ip), 'Missing host '+ip);
- assert.ok(install.includes(ip), 'Missing IP in PowerShell '+ip);
+ assert.ok(install.includes(ip), 'Missing host in PowerShell '+ip);
 }
+assert.match(install, /-WindowStyle Hidden/);
 assert.match(install, /Start-Process/);
 assert.match(install, /HKCU:\\Software\\Classes\\/);
 assert.match(install, /\^nightshifthub-xshell:\/\/open-all\/\?\$/);
 assert.match(install, /Read-Host 'Type YES to install/);
-assert.doesNotMatch(script, /eval\s*\(|new\s+Function\s*\(/);
-assert.doesNotMatch(script, /chrome\.scripting|child_process|ActiveXObject/);
-console.log('PASS: Night Shift Hub one-click Xshell launcher static source contract');
+console.log('PASS: Night Shift Hub single-button Xshell launcher static source contract');

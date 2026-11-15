@@ -15,50 +15,20 @@
 
 Repository: `Riptwosec-collab/night-shift-hub`
 
-## เปิด Xshell จากหน้าเว็บ (SSH Quick Launch)
+## เปิด Xshell ทั้งสามอุปกรณ์ด้วยปุ่มเดียว
 
-หน้าเว็บมีปุ่ม **เปิด Xshell** และ **คัดลอก SSH** ใต้การ์ดตรวจอุณหภูมิ 3 ตัว โดยกดเปิดทีละเครื่อง:
+บนเว็บไซต์จะมีปุ่มเดียวคือ **เปิด Xshell ทั้ง 3** บริเวณเหนือการ์ดอุณหภูมิ ไม่มีปุ่มเปิดทีละเครื่อง/คัดลอก SSH และไม่มีปุ่มติดตั้งบนหน้าเว็บ
 
-- IT05-C3750X-Intra-Inter — `ssh://10.1.100.3`
-- IT06-C9500-CSW1-A01 — `ssh://10.1.100.1`
-- IT06-C9500-CSW2-A02 — `ssh://10.1.100.2`
-
-ปุ่มเปิดจะส่ง `ssh://` ให้ Windows จัดการ ต้องตั้ง Xshell 8 เป็นแอปเริ่มต้นของลิงก์ SSH ก่อน ผู้ใช้จะต้องยืนยันการเปิดแอปภายนอกใน Chrome/Edge ตามการตั้งค่าของเบราว์เซอร์ และยังต้องมีสิทธิ์/VPN เข้าถึงอุปกรณ์ตามปกติ เมื่อไม่ตั้งค่า Handler ใช้ปุ่มคัดลอก SSH แล้ววางใน Address Bar ของ Xshell เองได้
-
-คำสั่งเปิดโดยตรง (ทางเลือก): `Xshell -url ssh://10.1.100.3` / `Xshell -url ssh://10.1.100.1` / `Xshell -url ssh://10.1.100.2` ไม่บันทึก Username/Password ในเว็บ การเปิดลิงก์เป็นเพียงคำขอเปิด Session ไม่ได้หมายความว่าเชื่อมต่อสำเร็จ
-
-## เปิด Xshell 8 ทั้ง 3 Session ด้วยปุ่มเดียวบนเว็บไซต์
-
-ปุ่ม **เปิด Xshell ทั้ง 3** แสดงเหนือการ์ดตรวจอุณหภูมิ จะส่ง URL **nightshifthub-xshell://open-all** ให้ Windows เรียก PowerShell ที่ติดตั้งไว้ในเครื่อง ต้องติดตั้งตัวเปิดครั้งแรก เนื่องจากเว็บไซต์ไม่สามารถสั่งรัน PowerShell โดยตรงได้
-
-### ตั้งค่าครั้งแรกบน Windows
-
-1. บนเว็บไซต์คลิก **ติดตั้งตัวเปิด (ครั้งแรก)** เพื่อดาวน์โหลดไฟล์ install-nightshift-xshell.ps1
-2. ตรวจสอบเนื้อหาไฟล์ เปิด PowerShell ในโฟลเดอร์ Downloads แล้วรันคำสั่งนี้:
+- เปิดตามลำดับ `10.1.100.3`, `10.1.100.1`, `10.1.100.2` ผ่าน Xshell 8
+- เว็บไซต์ส่ง `nightshifthub-xshell://open-all` ให้ Windows ไปยังตัวเชื่อมที่ต้องติดตั้งครั้งแรกบนเครื่องที่ใช้งาน ตัวเชื่อมจะสั่ง PowerShell แบบซ่อนหน้าต่างและเปิด Xshell ให้เห็น
+- **ต้องติดตั้งตัวเชื่อมบน Windows ครั้งแรกก่อน** ดาวน์โหลดไฟล์ [install-nightshift-xshell.ps1](./install-nightshift-xshell.ps1) จาก Repository ตรวจสอบไฟล์ แล้วรันจาก PowerShell ในโฟลเดอร์ที่เก็บไฟล์:
 
     powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\install-nightshift-xshell.ps1"
 
-3. หากตัวติดตั้งค้นหา Xshell.exe ไม่พบ ให้ระบุ Full Path จาก Shortcut Properties
-4. ตัวติดตั้งจะแสดง IP ทั้งสามและขอให้พิมพ์ YES ก่อนลงทะเบียนตัวเปิด Windows ภายใต้ HKCU (ไม่ต้อง Run as Administrator)
-5. ใน Xshell เลือก Tools > Options > Advanced > **Open multiple sessions in a single Xshell window** เพื่อให้ปรากฏสามแท็บในหน้าต่างเดียว
+- พิมพ์ `YES` เมื่อแสดงข้อมูล IP ที่จะเปิดและยืนยันลงทะเบียน Windows custom URL scheme ภายใต้บัญชีตัวเอง (HKCU) ไม่ใช่การเปลี่ยน SSH handler หลัก
+- ตั้ง Xshell ให้เปิดหลาย Session ในหน้าต่างเดียว หากต้องการ 3 แท็บแทน 3 หน้าต่าง (เมนู Tools > Options > Advanced)
+- Chrome/Edge อาจขออนุญาตเปิดโปรแกรมภายนอก แม้ลงทะเบียนแล้ว เว็บไม่สามารถข้ามการยืนยันนี้หรือรัน PowerShell ด้วยตัวเองได้
+- หากไม่สำเร็จ ให้ตรวจ `%LOCALAPPDATA%\NightShiftHub\XshellLauncher\launcher-error.log` และการติดตั้ง Xshell
+- ถอนการติดตั้งได้ด้วย `powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\install-nightshift-xshell.ps1" -Uninstall`
 
-หลังติดตั้ง กดปุ่ม **เปิด Xshell ทั้ง 3** หนึ่งครั้ง Chrome/Edge อาจขออนุญาตเปิดแอปภายนอก PowerShell จะเปิดคำสั่งตามลำดับ โดยเว้น 900 มิลลิวินาทีต่อเครื่อง:
-
-1. Xshell.exe -url ssh://10.1.100.3
-2. Xshell.exe -url ssh://10.1.100.1
-3. Xshell.exe -url ssh://10.1.100.2
-
-ฟังก์ชันเดิมของเว็บยังใช้ได้ รวมถึงปุ่มเปิดทีละเครื่องและคัดลอกลิงก์ SSH หากยังไม่ได้ติดตั้งตัวเปิด PowerShell
-
-### ความปลอดภัยและวิธียกเลิก
-
-- ตัวเปิดที่ใช้คือ custom URL protocol **nightshifthub-xshell://** ไม่ได้เปลี่ยนตัวเปิดลิงก์ **ssh://** ปกติของ Windows
-- สคริปต์ที่ติดตั้งในเครื่องยอมรับเฉพาะ URL สำหรับเปิดสาม Session ที่ระบุไว้ตายตัวเท่านั้น ไม่รับ PowerShell command หรือ IP จากเว็บ
-- การกดปุ่มจากเว็บเป็นคำขอให้ Windows เปิดโปรแกรม ไม่ใช่การยืนยันว่าการเชื่อมต่อ SSH สำเร็จ
-- เว็บอื่นอาจขอเปิด protocol เดียวกันได้เช่นกัน Windows/Chrome อาจแสดงกล่องขออนุญาต ควรตรวจสอบก่อนยืนยัน
-- การใช้ -ExecutionPolicy Bypass จำกัดอยู่ที่ PowerShell โปรเซสที่เรียก ไม่ได้เปลี่ยน Execution Policy ของทั้งเครื่อง ผู้ใช้ควรอ่านไฟล์ก่อนรัน
-- ถอนการติดตั้งด้วยคำสั่งนี้จากโฟลเดอร์ที่มีไฟล์เดิม:
-
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\install-nightshift-xshell.ps1" -Uninstall
-
-ต้องมี Xshell 8 ติดตั้งในเครื่องและได้รับอนุญาตให้เข้าถึงระบบเครือข่ายตามปกติ
+เว็บไม่ได้เก็บรหัสผ่าน/SSH credentials และไม่ยืนยันว่าการเชื่อมต่อสำเร็จ การเปิดใช้งานต้องมีสิทธิ์เข้าถึงเครือข่ายตามปกติ
