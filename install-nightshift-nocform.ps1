@@ -82,18 +82,21 @@ if($SourceCmd -ne $installedCmd){Copy-Item -LiteralPath $SourceCmd -Destination 
 if($sourcePs -ne $installedPs){Copy-Item -LiteralPath $sourcePs -Destination $installedPs -Force}
 
 $source=@'
-# Fixed local bridge for NOC External AutoFill; accepts NO URL or other arguments.
+# Fixed local action. Accept only the URL of this one form.
+param([Parameter(Position=0)][string]$Uri='')
 $ErrorActionPreference='Stop'
+if($Uri -notmatch '^nightshifthub-nocform://open/?$'){exit 2}
 $folder=Join-Path $env:LOCALAPPDATA 'NightShiftHub\NOCExternalForm'
 $cmd=Join-Path $folder 'OPEN_NOC_FORM.cmd'
 $ps1=Join-Path $folder 'NOC_External_Form.ps1'
+$exe=Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powershell.exe'
 try {
     if(-not (Test-Path -LiteralPath $cmd -PathType Leaf) -or
        -not (Test-Path -LiteralPath $ps1 -PathType Leaf)){
         throw 'NOC form files are missing. Reinstall the NOC Windows launcher.'
     }
-    # The selected CMD launches PowerShell -STA and its sibling NOC_External_Form.ps1.
-    Start-Process -FilePath $cmd -WorkingDirectory $folder
+    # The original CMD is only a wrapper for this WinForms PowerShell script.
+    Start-Process -FilePath $exe -WorkingDirectory $folder -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-STA','-File',('"' + $ps1 + '"'))
 } catch {
     $log=Join-Path $folder 'launcher-error.log'
     Add-Content -LiteralPath $log -Value ((Get-Date -Format 's')+' '+$_.Exception.Message)
@@ -109,8 +112,8 @@ try {
 '@
 Set-Content -LiteralPath $launcher -Value $source -Encoding UTF8
 
-# Never interpolate a browser-provided URL. The command has no %1 argument.
-$command='"'+$psExe+'" -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "'+$launcher+'"'
+# The local handler validates the clicked URL. Do not accept arbitrary commands.
+$command='"'+$psExe+'" -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "'+$launcher+'" "%1"'
 New-Item -Path $key -Force | Out-Null
 Set-Item -LiteralPath $key -Value 'URL:Night Shift Hub NOC External Form'
 New-ItemProperty -LiteralPath $key -Name 'URL Protocol' -PropertyType String -Value '' -Force | Out-Null
@@ -122,3 +125,5 @@ Write-Host 'Installation completed.' -ForegroundColor Green
 Write-Host 'Go to Night Shift Hub > NOC@RD Table Builder > Open NOC External Form.'
 Write-Host 'No private NOC form scripts have been published to GitHub or the website.'
 Write-Host 'Uninstall: rerun this file with -Uninstall.'
+Write-Host 'Test: Start-Process "nightshifthub-nocform://open"'
+Write-Host ('Error log: '+(Join-Path $folder 'launcher-error.log'))

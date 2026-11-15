@@ -138,3 +138,15 @@ Original uploaded `OPEN_NOC_FORM.cmd` starts the WinForms PowerShell 5.1 program
 **Privacy:** user-supplied NOC CMD/PS1 files and workbook contents are not uploaded to GitHub or transmitted by this website. They remain stored only on the Windows PC where they are installed. The installer is published; the two operational scripts are not.
 
 **Uninstall:** run the same Windows installer with `-Uninstall` to remove the protocol registration and the installed copies (not your original files). The effect of opening the program and writing data through Excel COM must be tested on Windows; static tests only check that the button and installer are wired correctly.
+
+
+### NOC External Form launcher reliability repair — 2026-11-16
+
+- Removed the old **เปิด Table Builder** button. The **เปิด NOC External Form** button is now the primary action in card 7.
+- Added a small help link for downloading the one-time Windows installer, because a web browser cannot execute local CMD/PowerShell without a registered handler.
+- The Windows URL handler now passes the clicked URL as \"%1\" and accepts only `nightshifthub-nocform://open`. This URL cannot supply file paths or commands.
+- To avoid the Windows CMD association issue, the handler now launches the user's **local** `NOC_External_Form.ps1` with PowerShell 5.1 `-STA` directly. The originally uploaded `OPEN_NOC_FORM.cmd` does the same and is still copied/validated during setup.
+- **Must reinstall the updated Windows bridge once.** The website alone cannot update the copy already in Windows. Use the installer file and confirm `YES`; then test in Windows PowerShell using `Start-Process 'nightshifthub-nocform://open'`.
+- Do not put the private CMD, PowerShell form or Excel workbook into this public GitHub repository. If launching fails check `%LOCALAPPDATA%\NightShiftHub\NOCExternalForm\launcher-error.log`.
+
+The program still edits the already-open Excel workbook without automatic Save. Windows program launch and Excel COM behavior require testing on the user's computer.

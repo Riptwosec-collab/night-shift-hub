@@ -112,9 +112,9 @@
         <span class="chip">เครื่องมือ</span>
       </div>
       <div class="action-row">
-        <button class="btn btn-primary" id="openNocBuilder" type="button">เปิด Table Builder</button>
-        <a class="btn btn-ghost" id="openNocExternalForm" href="nightshifthub-nocform://open" title="เปิด OPEN_NOC_FORM.cmd ที่ติดตั้งไว้บน Windows (NOC External AutoFill V3.9)">เปิด NOC External Form</a>
-      </div>`;
+        <a class="btn btn-primary" id="openNocExternalForm" href="nightshifthub-nocform://open" title="เปิด NOC External AutoFill V3.9 บน Windows">เปิด NOC External Form</a>
+      </div>
+      <p class="tiny-note" style="margin:9px 12px;color:#7fa9bd;font-size:10px">เปิดไม่ได้? <a href="./install-nightshift-nocform.ps1" download="install-nightshift-nocform.ps1" style="color:#71d9f9;text-decoration:underline">ตั้งค่าตัวเปิด Windows</a> ครั้งแรก</p>`;
     grid.appendChild(card);
   }
 
@@ -327,11 +327,10 @@
     page.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('noc-table-open');
     if (!fromHistory && location.hash === '#noc-table') history.back();
-    setTimeout(() => document.getElementById('openNocBuilder')?.focus(), 20);
+    setTimeout(() => document.getElementById('openNocExternalForm')?.focus(), 20);
   }
 
   function bindEvents() {
-    document.getElementById('openNocBuilder')?.addEventListener('click', () => openPage(true));
     document.getElementById('nocBuilderBack')?.addEventListener('click', () => closePage(false));
     ['nocDateSelect','nocTimeSelect','nocFollower1','nocFollower2'].forEach(id => document.getElementById(id)?.addEventListener('change', updateGlobal));
     document.getElementById('nocPasteZone')?.addEventListener('input', parseText);
