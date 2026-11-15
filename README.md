@@ -32,3 +32,19 @@ Repository: `Riptwosec-collab/night-shift-hub`
 - ถอนการติดตั้งได้ด้วย `powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\install-nightshift-xshell.ps1" -Uninstall`
 
 เว็บไม่ได้เก็บรหัสผ่าน/SSH credentials และไม่ยืนยันว่าการเชื่อมต่อสำเร็จ การเปิดใช้งานต้องมีสิทธิ์เข้าถึงเครือข่ายตามปกติ
+
+## Excel -> PDF Auto (Windows Desktop)
+
+New Excel → PDF Auto card in Night Shift Hub. Click เลือก Excel → สร้าง PDF อัตโนมัติ. The browser requests the fixed local URL nightshifthub-excelpdf://run, which invokes the installed Windows helper. Windows opens its file picker; select one or multiple Excel workbooks and conversion continues automatically. PDF output is saved next to each original Excel file; existing PDF filenames are not overwritten. One converted PDF is opened automatically; for multiple exports, Explorer opens the first PDF location.
+
+**One-time Windows setup:** From the website choose ตั้งค่าบน Windows ครั้งแรก to download install-nightshift-excelpdf.ps1, review its contents, then from that Downloads directory run:
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\install-nightshift-excelpdf.ps1"
+
+Enter YES when prompted. This registers the fixed nightshifthub-excelpdf://run handler for the current Windows account only; it does not affect Xshell protocol bindings or global PowerShell policy. Microsoft Excel Desktop is required.
+
+Conversion keeps source .xlsx/.xls/.xlsm files intact by opening them read-only, and formats the first worksheet for the user-supplied 23-event report reference: nonbold used-cell font (two Bold toggles), print range A1:J[last row], A4 landscape, one-page-wide with automatic vertical pagination, no repeated header, original merges/borders/widths intact. If the workbook matches the reference header and 27 used rows, a manual break is added before row 20. Other workbook structures may require different print settings; exact pixel parity with a PDF cannot be guaranteed without the original Excel source.
+
+Security: the website does not upload or read local Excel data. Browser-side JavaScript cannot run Excel/PowerShell independently. The native helper rejects all protocol requests except the fixed run action, never executes script from the browser, disables Excel VBA macros, and asks the user to select files. Any other website could request the same registered URL; the browser may prompt for approval. Uninstall by running the same installer with -Uninstall from its original folder.
+
+The browser/Windows/Excel end-to-end workflow must be verified on an actual Windows machine; source-level/static checks are not a substitute.
