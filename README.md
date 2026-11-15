@@ -56,3 +56,9 @@ Fixed an Excel COM automation error: Unable to set the FitToPagesTall property o
 **IMPORTANT for users with existing installations:** Reloading the website alone does NOT replace the PowerShell script already installed in %LOCALAPPDATA%\NightShiftHub\ExcelPDF. Click the updated website link **ติดตั้ง / อัปเดตตัวแปลง Windows** to download the new installer and run it again in PowerShell. It overwrites only this helper and updates the per-user protocol registration after confirmation. The original Excel workbooks are still opened read-only.
 
 If this specific error remains after updating, check Windows Settings > Bluetooth & devices > Printers & scanners, verify a working default printer (e.g. Microsoft Print to PDF), then retest. Actual Windows Excel and printer integration must be validated on the user's machine.
+
+### Output filename encoding repair (v1.1.2)
+
+On Windows PowerShell 5.1 an installer decoded without a UTF-8 BOM can corrupt the non-ASCII Thai filename suffix. The installer now has a UTF-8 BOM and the output suffix is ASCII-only. The generated PDF preserves the **original Excel filename** (including Thai) and appends `_A4.pdf`; if already present, `_A4_2.pdf`, `_A4_3.pdf`, etc. Existing PDFs are never renamed or overwritten automatically. The Excel data and PDF formatting logic remain unchanged.
+
+If you already installed a previous version, download **ติดตั้ง / อัปเดตตัวแปลง Windows** from the website and run the installer again, then enter `YES` to replace the local helper. The website alone cannot replace a locally installed Windows script.

@@ -79,10 +79,10 @@
     });
     const setup = document.createElement('a');
     setup.className = 'nsh-pdf-setup';
-    setup.href = './install-nightshift-excelpdf.ps1?v=1.1.1';
+    setup.href = './install-nightshift-excelpdf.ps1?v=1.1.2';
     setup.download = 'install-nightshift-excelpdf.ps1';
     setup.textContent = 'ติดตั้ง / อัปเดตตัวแปลง Windows';
-    setup.title = 'เวอร์ชัน 1.1.1: แก้ Excel FitToPagesTall Error — ดาวน์โหลดและรันเพื่อติดตั้งทับเวอร์ชันเก่า';
+    setup.title = 'เวอร์ชัน 1.1.2: แก้ชื่อ PDF ภาษาไทยเป็น _A4.pdf — ดาวน์โหลดและติดตั้งทับรุ่นเดิม';
     actions.append(start, setup);
     body.append(details, actions);
     article.append(heading, body);

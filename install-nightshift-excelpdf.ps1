@@ -1,4 +1,4 @@
-# Night Shift Hub Excel -> PDF local Windows bridge setup (current user only).
+﻿# Night Shift Hub Excel -> PDF local Windows bridge setup (current user only).
 # Review before running. No website uploads, credentials or arbitrary downloaded scripts.
 [CmdletBinding()]
 param([switch]$Uninstall)
@@ -48,7 +48,7 @@ function UniquePdf([string]$source) {
     $folder=[IO.Path]::GetDirectoryName($source)
     $name=[IO.Path]::GetFileNameWithoutExtension($source)
     for($i=1;$i -le 999;$i++){
-        $suffix=if($i -eq 1){'_จัดหน้า_A4.pdf'}else{'_จัดหน้า_A4_'+$i+'.pdf'}
+        $suffix=if($i -eq 1){'_A4.pdf'}else{'_A4_'+$i+'.pdf'}
         $result=Join-Path $folder ($name+$suffix)
         if (-not [IO.File]::Exists($result)) { return $result }
     }
