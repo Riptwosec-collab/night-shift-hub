@@ -71,7 +71,24 @@ function ConvertOne([object]$app,[string]$source) {
         $page.PaperSize=9                   # A4
         $page.Zoom=$false
         $page.FitToPagesWide=1
-        $page.FitToPagesTall=0              # Multiple vertical pages allowed
+        # Excel COM requires a Boolean False, NOT numeric 0, for unlimited vertical pages.
+        # In some Excel / printer configurations, a PrintCommunication retry is necessary.
+        try {
+            $page.FitToPagesTall=$false
+        } catch {
+            try {
+                $app.PrintCommunication=$false
+                try {
+                    $page.Zoom=$false
+                    $page.FitToPagesWide=1
+                    $page.FitToPagesTall=$false
+                } finally {
+                    $app.PrintCommunication=$true
+                }
+            } catch {
+                throw ('ตั้งค่าแบ่งหน้าของ Excel ไม่สำเร็จ กรุณาตรวจสอบ Windows Default Printer (เช่น Microsoft Print to PDF) และตั้งค่า Page Layout ของ Excel: '+$_.Exception.Message)
+            }
+        }
         $page.PrintArea=$range.Address($true,$true)
         $page.PrintTitleRows=''             # No repeated title on page two
         $page.PrintTitleColumns=''

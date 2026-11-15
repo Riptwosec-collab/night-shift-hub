@@ -48,3 +48,11 @@ Conversion keeps source .xlsx/.xls/.xlsm files intact by opening them read-only,
 Security: the website does not upload or read local Excel data. Browser-side JavaScript cannot run Excel/PowerShell independently. The native helper rejects all protocol requests except the fixed run action, never executes script from the browser, disables Excel VBA macros, and asks the user to select files. Any other website could request the same registered URL; the browser may prompt for approval. Uninstall by running the same installer with -Uninstall from its original folder.
 
 The browser/Windows/Excel end-to-end workflow must be verified on an actual Windows machine; source-level/static checks are not a substitute.
+
+### Excel -> PDF bug fix (v1.1.1)
+
+Fixed an Excel COM automation error: Unable to set the FitToPagesTall property of the PageSetup class. The earlier PowerShell helper incorrectly assigned numeric 0; the updated helper uses Boolean $false as required by Excel. If the Excel/printer integration still rejects this setting, the helper retries with PrintCommunication turned off/on and gives a printer-specific diagnostic.
+
+**IMPORTANT for users with existing installations:** Reloading the website alone does NOT replace the PowerShell script already installed in %LOCALAPPDATA%\NightShiftHub\ExcelPDF. Click the updated website link **ติดตั้ง / อัปเดตตัวแปลง Windows** to download the new installer and run it again in PowerShell. It overwrites only this helper and updates the per-user protocol registration after confirmation. The original Excel workbooks are still opened read-only.
+
+If this specific error remains after updating, check Windows Settings > Bluetooth & devices > Printers & scanners, verify a working default printer (e.g. Microsoft Print to PDF), then retest. Actual Windows Excel and printer integration must be validated on the user's machine.

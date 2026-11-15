@@ -79,10 +79,10 @@
     });
     const setup = document.createElement('a');
     setup.className = 'nsh-pdf-setup';
-    setup.href = './install-nightshift-excelpdf.ps1';
+    setup.href = './install-nightshift-excelpdf.ps1?v=1.1.1';
     setup.download = 'install-nightshift-excelpdf.ps1';
-    setup.textContent = 'ตั้งค่าบน Windows ครั้งแรก';
-    setup.title = 'ดาวน์โหลดสคริปต์ติดตั้งตัวเชื่อมในเครื่อง (ต้องตรวจสอบและยืนยันก่อนติดตั้ง)';
+    setup.textContent = 'ติดตั้ง / อัปเดตตัวแปลง Windows';
+    setup.title = 'เวอร์ชัน 1.1.1: แก้ Excel FitToPagesTall Error — ดาวน์โหลดและรันเพื่อติดตั้งทับเวอร์ชันเก่า';
     actions.append(start, setup);
     body.append(details, actions);
     article.append(heading, body);
