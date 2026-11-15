@@ -9,13 +9,13 @@ const ps=fs.readFileSync(path.join(root,'install-nightshift-excelpdf.ps1'),'utf8
 const srcs=[...html.matchAll(/<script\b[^>]*src="\.\/([^"]+)"/g)].map(m=>m[1]);
 assert.deepEqual(srcs,[
  'app.js','section-toggle.js','temperature-auto.js',
- 'secret-link.js','custom-links.js','noc-table.js',
+ 'secret-link.js','noc-table.js',
  'xshell-quick-launch.js','excel-pdf-auto.js'
 ]);
 assert.match(js,/nightshifthub-excelpdf:\/\/run/);
 assert.match(js,/\.cards-grid/);
 assert.match(js,/เลือก Excel → สร้าง PDF อัตโนมัติ/);
-assert.match(js,/install-nightshift-excelpdf\.ps1/);
+assert.doesNotMatch(js,/install-nightshift-excelpdf\.ps1/);
 assert.match(ps,/nightshifthub-excelpdf:\/\/run/);
 assert.match(ps,/OpenFileDialog/);
 assert.match(ps,/Multiselect=\$true/);
@@ -35,8 +35,10 @@ assert.match(ps,/FitToPagesTall=\$false/);
 assert.doesNotMatch(ps,/FitToPagesTall=0\b/);
 assert.match(ps,/PrintCommunication=\$false/);
 assert.match(ps,/PrintCommunication=\$true/);
-assert.match(js,/อัปเดตตัวแปลง Windows/);
-assert.match(js,/1\.1\.3/);
+assert.doesNotMatch(js,/ติดตั้ง \/ อัปเดตตัวแปลง Windows/);
+assert.doesNotMatch(js,/nsh-pdf-setup|setup\.href|actions\.append\(start, setup\)/);
+assert.doesNotMatch(html,/custom-links-panel|custom-links\.js/);
+assert.match(js,/actions\.append\(start\);/);
 assert.match(ps,/\$suffix=if\(\$i -eq 1\)\{'\.pdf'\}else\{'_'+\$i\+'\.pdf'\}/);
 assert.doesNotMatch(ps,/_จัดหน้า_A4|_A4\.pdf/);
 assert.ok(ps.charCodeAt(0) === 0xFEFF,'UTF-8 BOM required for Windows PowerShell 5.1');

@@ -77,13 +77,7 @@
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 3800);
     });
-    const setup = document.createElement('a');
-    setup.className = 'nsh-pdf-setup';
-    setup.href = './install-nightshift-excelpdf.ps1?v=1.1.3';
-    setup.download = 'install-nightshift-excelpdf.ps1';
-    setup.textContent = 'ติดตั้ง / อัปเดตตัวแปลง Windows';
-    setup.title = 'เวอร์ชัน 1.1.3: ใช้ชื่อ Excel เดิมแล้วเปลี่ยนเป็น .pdf เท่านั้น — ดาวน์โหลดติดตั้งทับรุ่นเดิม';
-    actions.append(start, setup);
+    actions.append(start);
     body.append(details, actions);
     article.append(heading, body);
     grid.appendChild(article);

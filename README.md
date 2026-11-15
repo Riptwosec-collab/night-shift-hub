@@ -68,3 +68,7 @@ If you already installed a previous version, download **ติดตั้ง / 
 PDFs now use the exact same base filename as the selected Excel file, with only the extension changed to `.pdf`. For example: `สรุปรายงานเหตุการณ์ วันที่ 15 พฤศจิกายน 2569 เวลา 06.00 น.-20.30 น.xlsx` becomes `สรุปรายงานเหตุการณ์ วันที่ 15 พฤศจิกายน 2569 เวลา 06.00 น.-20.30 น.pdf`. No `_A4` or `_จัดหน้า` suffix is added. Only when that PDF name already exists, the converter saves `..._2.pdf`, `..._3.pdf`, etc., to avoid overwriting user files. It still retains the UTF-8 BOM for Windows PowerShell 5.1.
 
 **Already installed?** The fix requires downloading and re-running `install-nightshift-excelpdf.ps1` from the website (v1.1.3) and typing `YES`; simply refreshing the website will not change the installed local script.
+
+### Website cleanup — 2026-11-15
+
+Removed the **ติดตั้ง / อัปเดตตัวแปลง Windows** link from the Excel → PDF Auto card and removed the entire **ลิงก์เพิ่มเติม** custom-links card (including its JavaScript loader). The main Excel → PDF Auto button still works with the already-installed Windows protocol helper; the PowerShell installer file remains in the repository for future manual upgrades. Custom-link entries already saved in browser localStorage were **not deleted**. No network/temperature/report/Xshell code was changed.
