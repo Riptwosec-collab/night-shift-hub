@@ -72,3 +72,24 @@ PDFs now use the exact same base filename as the selected Excel file, with only 
 ### Website cleanup — 2026-11-15
 
 Removed the **ติดตั้ง / อัปเดตตัวแปลง Windows** link from the Excel → PDF Auto card and removed the entire **ลิงก์เพิ่มเติม** custom-links card (including its JavaScript loader). The main Excel → PDF Auto button still works with the already-installed Windows protocol helper; the PowerShell installer file remains in the repository for future manual upgrades. Custom-link entries already saved in browser localStorage were **not deleted**. No network/temperature/report/Xshell code was changed.
+
+
+## NetFlow 14-node automatic Chrome launch
+
+The NetFlow card now includes the single button **เปิด NetFlow ทั้ง 14 จุด**, next to the existing Open Google Sheet / Copy Link / Mark Done controls. The manually selectable 14 links remain intact.
+
+**One-time Windows setup** (no new installer button on the website): download and review install-nightshift-netflow.ps1 from the repository root. Open PowerShell in the downloaded file's directory and run:
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\install-nightshift-netflow.ps1"
+
+After reviewing the details, type YES to confirm. This registers nightshifthub-netflow://open-all for the current Windows user (HKCU), without replacing any Xshell or Excel/PDF association. The website cannot directly run PowerShell; the locally installed fixed-purpose handler is required for reliable opening of 14 tabs rather than risking browser popup blocking.
+
+Clicking the NetFlow card button asks Windows to launch one Google Chrome NEW WINDOW with 14 tabs in exactly this order:
+3677, 3723, 7163, 3843, 3841, 2597, 3853, 3854, 3855, 3856, 3861, 3863, 3865, 3866.
+All pages use https://nocorion.rd.go.th/Orion/TrafficAnalysis/NetflowNodeDetails.aspx?NetObject=NN:<ID>.
+
+The launcher stores no passwords, accepts no URLs or code from the website, and rejects all inputs except the exact fixed protocol action. Any website can request that protocol, but it can only trigger these predefined tabs. Chrome may ask permission to open an external program, and intranet pages still require normal VPN/login access. If Chrome is missing the launcher reports an error and writes a local log in LOCALAPPDATA/NightShiftHub/NetFlowLauncher/netflow-launcher-error.log.
+
+To uninstall, run the same installer with -Uninstall.
+
+Live Windows/Chrome end-to-end testing is still necessary; a successful request does not establish that the intranet pages loaded.

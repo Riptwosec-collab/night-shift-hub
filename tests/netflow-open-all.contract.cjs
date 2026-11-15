@@ -1,0 +1,26 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const app=fs.readFileSync(path.join(root,'app.js'),'utf8');
+const install=fs.readFileSync(path.join(root,'install-nightshift-netflow.ps1'),'utf8');
+const wanted=['3677','3723','7163','3843','3841','2597','3853',
+'3854','3855','3856','3861','3863','3865','3866'];
+const originalIds=[...app.matchAll(/\['NN:(\d+)','https:\/\/nocorion\.rd\.go\.th\/Orion\/TrafficAnalysis\/NetflowNodeDetails\.aspx\?NetObject=NN:\d+'\]/g)].map(x=>x[1]);
+assert.deepEqual(originalIds,wanted,'Site NetFlow node list/order must be preserved');
+const runnerIds=[...install.matchAll(/'(\d{4})'/g)].map(x=>x[1]);
+assert.deepEqual(runnerIds,wanted,'Launcher targets must match site');
+assert.match(app,/id="openAllNetflowBtn"/);
+assert.match(app,/href="nightshifthub-netflow:\/\/open-all"/);
+assert.match(app,/เปิด NetFlow ทั้ง 14 จุด/);
+assert.match(app,/id="copyNetflowSheet"/);
+assert.match(app,/safe-netflow-grid/);
+assert.match(install,/\^nightshifthub-netflow:\/\/open-all\/\?\$/);
+assert.match(install,/--new-window/);
+assert.match(install,/Start-Process -FilePath \$chrome -ArgumentList/);
+assert.match(install,/Count -ne 14/);
+assert.match(install,/HKCU:\\Software\\Classes\\/);
+assert.match(install,/Read-Host 'Type YES to install/);
+assert.doesNotMatch(install,/Invoke-Expression|IEX |DownloadString|iex \(/i);
+console.log('PASS: Night Shift Hub NetFlow 14 one-click launcher static contract');

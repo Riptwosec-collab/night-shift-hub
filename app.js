@@ -95,10 +95,10 @@ function buildUI() {
     </article>
 
     <article class="panel link-card" data-task-card="3">
-      <div class="section-heading compact-heading"><div class="heading-left"><span class="step-badge">3</span><div><h2>ตรวจสอบกราฟ NetFlow</h2><p>เปิดเฉพาะจุดที่ต้องการโดยผู้ใช้กดเอง</p></div></div><span class="chip task-chip" id="status3">รอดำเนินการ</span></div>
+      <div class="section-heading compact-heading"><div class="heading-left"><span class="step-badge">3</span><div><h2>ตรวจสอบกราฟ NetFlow</h2><p>เลือกเปิดรายจุด หรือเปิดทั้ง 14 จุดพร้อมกัน</p></div></div><span class="chip task-chip" id="status3">รอดำเนินการ</span></div>
       <div class="url-box">${NETFLOW_SHEET}</div>
       <details class="safe-netflow"><summary>NetFlow 14 จุด — กดเพื่อเลือกรายการ</summary><div class="safe-netflow-grid">${NETFLOW_URLS.map(([name,url]) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${name}</a>`).join('')}</div></details>
-      <div class="action-row">${safeLink(NETFLOW_SHEET,'เปิด Google Sheet','btn-primary')}<button class="btn btn-ghost" id="copyNetflowSheet" type="button">คัดลอกลิงก์</button><button class="btn btn-ghost toggle-done" data-task="3" type="button">ทำเครื่องหมายเสร็จ</button></div>
+      <div class="action-row">${safeLink(NETFLOW_SHEET,'เปิด Google Sheet','btn-primary')}<a class="btn btn-primary" id="openAllNetflowBtn" href="nightshifthub-netflow://open-all" title="เปิด Chrome หน้าต่างใหม่พร้อม NetFlow 14 แท็บ (ต้องลงทะเบียนตัวเปิด Windows ครั้งแรก)">เปิด NetFlow ทั้ง 14 จุด</a><button class="btn btn-ghost" id="copyNetflowSheet" type="button">คัดลอกลิงก์</button><button class="btn btn-ghost toggle-done" data-task="3" type="button">ทำเครื่องหมายเสร็จ</button></div>
     </article>
 
     <article class="panel link-card" data-task-card="4">
