@@ -150,3 +150,19 @@ Original uploaded `OPEN_NOC_FORM.cmd` starts the WinForms PowerShell 5.1 program
 - Do not put the private CMD, PowerShell form or Excel workbook into this public GitHub repository. If launching fails check `%LOCALAPPDATA%\NightShiftHub\NOCExternalForm\launcher-error.log`.
 
 The program still edits the already-open Excel workbook without automatic Save. Windows program launch and Excel COM behavior require testing on the user's computer.
+
+### Repair corrupted PDF filenames on an already-installed Windows converter
+
+If a new export still ends with a corrupted Thai suffix followed by _A4.pdf, the installed local PowerShell converter likely differs from the current GitHub installer. The hosted website does not write PDF filenames itself, and existing PDFs are not automatically renamed.
+
+Download and review [repair-nightshift-excelpdf.ps1](./repair-nightshift-excelpdf.ps1), then run from Windows PowerShell 5.1:
+
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "<full path to repair-nightshift-excelpdf.ps1>"
+
+The repair utility inspects the local installed file at %LOCALAPPDATA%\NightShiftHub\ExcelPDF\convert-excel-to-pdf.ps1, makes a timestamped local backup, and replaces only the UniquePdf function with an ASCII-only suffix policy: the original Excel base filename followed by .pdf, or _2.pdf / _3.pdf if a file already exists. It does not edit Excel data, delete files, run network requests, or change protocol handlers.
+
+To rename a previously created PDF that still contains the bad _A4 suffix, rerun with -RenameExisting in an STA PowerShell:
+
+    powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File "<full path to repair-nightshift-excelpdf.ps1>" -RenameExisting
+
+Only user-selected PDFs are examined. The program previews proposed changes, requires typing RENAME, and skips name collisions. Review each proposed rename, because an intentionally named _A4 file could also match the pattern. The repair script is UTF-8 BOM-encoded for Windows PowerShell 5.1.
