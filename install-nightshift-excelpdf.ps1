@@ -48,7 +48,7 @@ function UniquePdf([string]$source) {
     $folder=[IO.Path]::GetDirectoryName($source)
     $name=[IO.Path]::GetFileNameWithoutExtension($source)
     for($i=1;$i -le 999;$i++){
-        $suffix=if($i -eq 1){'_A4.pdf'}else{'_A4_'+$i+'.pdf'}
+        $suffix=if($i -eq 1){'.pdf'}else{'_'+$i+'.pdf'}
         $result=Join-Path $folder ($name+$suffix)
         if (-not [IO.File]::Exists($result)) { return $result }
     }

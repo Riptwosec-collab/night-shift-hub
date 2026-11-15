@@ -62,3 +62,9 @@ If this specific error remains after updating, check Windows Settings > Bluetoot
 On Windows PowerShell 5.1 an installer decoded without a UTF-8 BOM can corrupt the non-ASCII Thai filename suffix. The installer now has a UTF-8 BOM and the output suffix is ASCII-only. The generated PDF preserves the **original Excel filename** (including Thai) and appends `_A4.pdf`; if already present, `_A4_2.pdf`, `_A4_3.pdf`, etc. Existing PDFs are never renamed or overwritten automatically. The Excel data and PDF formatting logic remain unchanged.
 
 If you already installed a previous version, download **ติดตั้ง / อัปเดตตัวแปลง Windows** from the website and run the installer again, then enter `YES` to replace the local helper. The website alone cannot replace a locally installed Windows script.
+
+### Output filename exact-match correction (v1.1.3)
+
+PDFs now use the exact same base filename as the selected Excel file, with only the extension changed to `.pdf`. For example: `สรุปรายงานเหตุการณ์ วันที่ 15 พฤศจิกายน 2569 เวลา 06.00 น.-20.30 น.xlsx` becomes `สรุปรายงานเหตุการณ์ วันที่ 15 พฤศจิกายน 2569 เวลา 06.00 น.-20.30 น.pdf`. No `_A4` or `_จัดหน้า` suffix is added. Only when that PDF name already exists, the converter saves `..._2.pdf`, `..._3.pdf`, etc., to avoid overwriting user files. It still retains the UTF-8 BOM for Windows PowerShell 5.1.
+
+**Already installed?** The fix requires downloading and re-running `install-nightshift-excelpdf.ps1` from the website (v1.1.3) and typing `YES`; simply refreshing the website will not change the installed local script.
